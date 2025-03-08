@@ -161,12 +161,12 @@ class Values {
   final double? precipitationProbabilityAvg;
   final int? precipitationProbabilityMax;
   final int? precipitationProbabilityMin;
-  final int? pressureSeaLevelAvg;
-  final int? pressureSeaLevelMax;
-  final int? pressureSeaLevelMin;
-  final int? pressureSurfaceLevelAvg;
-  final int? pressureSurfaceLevelMax;
-  final int? pressureSurfaceLevelMin;
+  final double? pressureSeaLevelAvg;
+  final double? pressureSeaLevelMax;
+  final double? pressureSeaLevelMin;
+  final double? pressureSurfaceLevelAvg;
+  final double? pressureSurfaceLevelMax;
+  final double? pressureSurfaceLevelMin;
   final double? rainAccumulationAvg;
   final double? rainAccumulationLweAvg;
   final double? rainAccumulationLweMax;
@@ -391,12 +391,12 @@ class Values {
             json["precipitationProbabilityAvg"]?.toDouble(),
         precipitationProbabilityMax: json["precipitationProbabilityMax"],
         precipitationProbabilityMin: json["precipitationProbabilityMin"],
-        pressureSeaLevelAvg: json["pressureSeaLevelAvg"],
-        pressureSeaLevelMax: json["pressureSeaLevelMax"],
-        pressureSeaLevelMin: json["pressureSeaLevelMin"],
-        pressureSurfaceLevelAvg: json["pressureSurfaceLevelAvg"],
-        pressureSurfaceLevelMax: json["pressureSurfaceLevelMax"],
-        pressureSurfaceLevelMin: json["pressureSurfaceLevelMin"],
+        pressureSeaLevelAvg: json["pressureSeaLevelAvg"]?.toDouble(),
+        pressureSeaLevelMax: json["pressureSeaLevelMax"]?.toDouble(),
+        pressureSeaLevelMin: json["pressureSeaLevelMin"]?.toDouble(),
+        pressureSurfaceLevelAvg: json["pressureSurfaceLevelAvg"]?.toDouble(),
+        pressureSurfaceLevelMax: json["pressureSurfaceLevelMax"]?.toDouble(),
+        pressureSurfaceLevelMin: json["pressureSurfaceLevelMin"]?.toDouble(),
         rainAccumulationAvg: json["rainAccumulationAvg"]?.toDouble(),
         rainAccumulationLweAvg: json["rainAccumulationLweAvg"]?.toDouble(),
         rainAccumulationLweMax: json["rainAccumulationLweMax"]?.toDouble(),

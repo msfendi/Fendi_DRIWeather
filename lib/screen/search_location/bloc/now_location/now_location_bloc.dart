@@ -45,6 +45,7 @@ class NowLocationBloc extends Bloc<NowLocationEvent, NowLocationState> {
     });
 
     on<_ChangeMyLocation>((event, emit) async {
+      emit(_Loading());
       try {
         final locationData = await locationRemoteDatasource.determinePosition();
         await locationLocalDatasource.saveLatLong(

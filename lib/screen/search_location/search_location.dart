@@ -15,13 +15,20 @@ class SearchLocation extends StatefulWidget {
 }
 
 class _SearchLocationState extends State<SearchLocation> {
-  late GoogleMapController mapController;
+  final Completer<GoogleMapController> _mapControllerCompleter = Completer();
   // LatLng _center =
   //     const LatLng(-7.797068, 110.370529); // Yogyakarta coordinates
   bool _showRecentSearch = false;
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+    _mapControllerCompleter.complete(controller);
+  }
+
+  Future<void> _animateCamera(double latitude, double longitude) async {
+    final GoogleMapController controller = await _mapControllerCompleter.future;
+    controller.animateCamera(
+      CameraUpdate.newLatLng(LatLng(latitude, longitude)),
+    );
   }
 
   Timer? _debounce;
@@ -47,26 +54,17 @@ class _SearchLocationState extends State<SearchLocation> {
           Positioned.fill(
             child: BlocConsumer<NowLocationBloc, NowLocationState>(
               listener: (context, state) {
-                print('$state error');
                 state.maybeWhen(
                   orElse: () {},
                   changedLocation: (latitude, longitude) {
-                    return GoogleMap(
-                      onMapCreated: (mapController) {
-                        mapController.animateCamera(
-                          CameraUpdate.newLatLng(
-                            LatLng(double.parse(latitude),
-                                double.parse(longitude)),
-                          ),
-                        );
-                      },
-                      myLocationEnabled: true,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                            double.parse(latitude), double.parse(longitude)),
-                        zoom: 11.0,
-                      ),
-                    );
+                    // _animateCamera(
+                    //     double.parse(latitude), double.parse(longitude));
+                    // Pastikan latitude dan longitude valid
+                    final lat = double.tryParse(latitude);
+                    final lng = double.tryParse(longitude);
+                    if (lat != null && lng != null) {
+                      _animateCamera(lat, lng);
+                    }
                   },
                 );
               },
@@ -82,16 +80,23 @@ class _SearchLocationState extends State<SearchLocation> {
                       ),
                     );
                   },
+                  changedLocation: (latitude, longitude) {
+                    final lat = double.tryParse(latitude);
+                    final lng = double.tryParse(longitude);
+                    if (lat != null && lng != null) {
+                      return GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        myLocationEnabled: true,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(lat, lng),
+                          zoom: 11.0,
+                        ),
+                      );
+                    } else {
+                      return Center(child: Text('Invalid location data'));
+                    }
+                  },
                   orElse: () {
-                    // return GoogleMap(
-                    //   onMapCreated: _onMapCreated,
-                    //   myLocationEnabled: true,
-                    //   initialCameraPosition: CameraPosition(
-                    //     target: LatLng(latitude, longitude),
-                    //     zoom: 11.0,
-                    //   ),
-                    // );
-                    // state.
                     return Center(child: CircularProgressIndicator());
                   },
                 );
@@ -267,6 +272,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       context.read<NowLocationBloc>().add(
                           NowLocationEvent.changeMyLocation(
                               latitude: item.lat!, longitude: item.lon!));
+                      _animateCamera(double.parse(item.lat!), double.parse(item.lon!));
                     },
                     child: Row(
                       children: [
